@@ -4,35 +4,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Canvas Segitiga</title>
+    <title>Canvas Segitiga Random</title>
     <style>
         canvas {
             border: 1px solid #000;
+        }
+
+        .color-picker {
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
     <canvas id="myCanvas" width="500" height="500"></canvas>
 
+    <input type="color" id="colorPicker1" class="color-picker" value="#ff0000">
+    <input type="color" id="colorPicker2" class="color-picker" value="#00ff00">
+    <input type="color" id="colorPicker3" class="color-picker" value="#0000ff">
+
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             var canvas = document.getElementById("myCanvas");
             var ctx = canvas.getContext("2d");
 
+            var colorPicker1 = document.getElementById("colorPicker1");
+            var colorPicker2 = document.getElementById("colorPicker2");
+            var colorPicker3 = document.getElementById("colorPicker3");
+
             canvas.addEventListener("click", function(event) {
                 var x = event.clientX - canvas.getBoundingClientRect().left;
                 var y = event.clientY - canvas.getBoundingClientRect().top;
 
-                drawTriangle(x, y);
+                drawRandomTriangle(x, y);
             });
 
-            function drawTriangle(x, y) {
+            function drawRandomTriangle(x, y) {
                 var sideLength = 200;
+                var shapeType = Math.floor(Math.random() * 3); // 0: Sama Sisi, 1: Sama Kaki, 2: Sembarang
 
-                // Mendapatkan warna acak untuk gradasi
-                var color1 = getRandomColor();
-                var color2 = getRandomColor();
-                var color3 = getRandomColor();
+                // Mendapatkan warna dari color picker
+                var color1 = colorPicker1.value;
+                var color2 = colorPicker2.value;
+                var color3 = colorPicker3.value;
 
                 // Membuat gradasi linear horizontal
                 var gradient = ctx.createLinearGradient(x, y, x + sideLength, y);
@@ -40,25 +53,30 @@
                 gradient.addColorStop(0.5, color2);
                 gradient.addColorStop(1, color3);
 
-                // Menggambar segitiga
+                // Menggambar segitiga berdasarkan tipe bentuk
                 ctx.beginPath();
-                ctx.moveTo(x, y);
-                ctx.lineTo(x + sideLength, y);
-                ctx.lineTo(x + sideLength / 2, y - Math.sqrt(3) / 2 * sideLength);
+                if (shapeType === 0) {
+                    // Sama Sisi
+                    ctx.moveTo(x, y);
+                    ctx.lineTo(x + sideLength, y);
+                    ctx.lineTo(x + sideLength / 2, y - Math.sqrt(3) / 2 * sideLength);
+                } else if (shapeType === 1) {
+                    // Sama Kaki
+                    ctx.moveTo(x, y);
+                    ctx.lineTo(x + sideLength, y);
+                    ctx.lineTo(x + sideLength / 2, y - Math.sqrt(3) / 2 * sideLength);
+                    ctx.lineTo(x, y);
+                } else {
+                    // Sembarang
+                    ctx.moveTo(x, y);
+                    ctx.lineTo(x + sideLength, y);
+                    ctx.lineTo(x + sideLength * Math.random(), y - Math.sqrt(3) / 2 * sideLength * Math.random());
+                }
                 ctx.closePath();
 
                 // Mengisi segitiga dengan gradasi
                 ctx.fillStyle = gradient;
                 ctx.fill();
-            }
-
-            function getRandomColor() {
-                var letters = "0123456789ABCDEF";
-                var color = "#";
-                for (var i = 0; i < 6; i++) {
-                    color += letters[Math.floor(Math.random() * 16)];
-                }
-                return color;
             }
         });
     </script>
