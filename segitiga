@@ -1,30 +1,66 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Random Triangle</title>
-  <style>
-    #container {
-      position: relative;
-      width: 400px;
-      height: 400px;
-      border: 1px solid #ccc;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas Segitiga</title>
+    <style>
+        canvas {
+            border: 1px solid #000;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="myCanvas" width="500" height="500"></canvas>
 
-    #triangle-container {
-      cursor: pointer;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var canvas = document.getElementById("myCanvas");
+            var ctx = canvas.getContext("2d");
 
-    #info-container {
-      margin-top: 10px;
-    }
+            canvas.addEventListener("click", function(event) {
+                var x = event.clientX - canvas.getBoundingClientRect().left;
+                var y = event.clientY - canvas.getBoundingClientRect().top;
 
-    #triangle {
-      position: absolute;
-      width: 
+                drawTriangle(x, y);
+            });
+
+            function drawTriangle(x, y) {
+                var sideLength = 200;
+
+                // Mendapatkan warna acak untuk gradasi
+                var color1 = getRandomColor();
+                var color2 = getRandomColor();
+                var color3 = getRandomColor();
+
+                // Membuat gradasi linear horizontal
+                var gradient = ctx.createLinearGradient(x, y, x + sideLength, y);
+                gradient.addColorStop(0, color1);
+                gradient.addColorStop(0.5, color2);
+                gradient.addColorStop(1, color3);
+
+                // Menggambar segitiga
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                ctx.lineTo(x + sideLength, y);
+                ctx.lineTo(x + sideLength / 2, y - Math.sqrt(3) / 2 * sideLength);
+                ctx.closePath();
+
+                // Mengisi segitiga dengan gradasi
+                ctx.fillStyle = gradient;
+                ctx.fill();
+            }
+
+            function getRandomColor() {
+                var letters = "0123456789ABCDEF";
+                var color = "#";
+                for (var i = 0; i < 6; i++) {
+                    color += letters[Math.floor(Math.random() * 16)];
+                }
+                return color;
+            }
+        });
+    </script>
+</body>
+</html>
